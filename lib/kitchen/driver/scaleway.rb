@@ -72,30 +72,27 @@ module Kitchen
         client
         return if state[:server_id].nil?
 
-        # A new instance cannot be destroyed before it is powered off.
-        # Retry stopping the instance as long as its status is not "stopped"
-
         loop do
-          instance = ::Scaleway::Server.find(state[:server_id])
+          begin
+            instance = ::Scaleway::Server.find(state[:server_id])
 
-          break if instance.state == 'stopped'
-          if instance.state != 'pending'
-            ::Scaleway::Server.power_off(state[:server_id])
-            break
-          end
-
-          info("Waiting on Scaleway instance <#{state[:server_id]}> to be stopped to destroy it, retrying in 8 seconds")
-          sleep 8
-        end
-
-        loop do
-          instance = ::Scaleway::Server.find(state[:server_id])
-
-          break if !instance
-            if instance.state != 'pending'
+            break if !instance
+            if instance && instance.state != 'pending'
+              volume = ::Scaleway::Server.find(state[:server_id]).image[:id]
               ::Scaleway::Server.terminate(state[:server_id])
+              ::Scaleway::Image.destroy(volume)
               break
             end
+          rescue ::Scaleway::APIError
+            break if !instance
+            if instance && instance.state == 'stopped'
+              ::Scaleway::Server.destroy(state[:server_id])
+              ::Scaleway::Image.destroy(state[:server_id].image[:id])
+              raise ::Kitchen::Error
+            end
+          rescue ::Scaleway::NotFound
+            instance = false
+          end
         end
 
         info("Scaleway instance <#{state[:server_id]}> destroyed.")
