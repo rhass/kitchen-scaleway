@@ -30,7 +30,6 @@ module Kitchen
       default_config :port, '22'
       default_config(:image) { |driver| driver.default_image.id }
       default_config(:server_name) { |driver| driver.default_name }
-      default_config :ssh_key, '~/.ssh/id_rsa'
 
       default_config :scaleway_org do
         ENV['SCALEWAY_ORG_TOKEN']
