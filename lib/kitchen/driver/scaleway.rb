@@ -93,7 +93,7 @@ module Kitchen
 
           break if !instance
             if instance.state != 'pending'
-              ::Scaleway::Server.destroy(state[:server_id])
+              ::Scaleway::Server.terminate(state[:server_id])
               break
             end
         end
