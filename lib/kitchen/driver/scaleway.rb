@@ -102,7 +102,8 @@ module Kitchen
 
       def default_image
         client
-        ::Scaleway::Image.find_by_name(@instance.platform.name)
+        ::Scaleway::Image.find_by_name(platform_to_slug_mapping.fetch(instance.platform.name,
+                                                                      instance.platform.name))
       end
 
       # Generate what should be a unique server name up to 63 total chars
@@ -140,6 +141,19 @@ module Kitchen
         ::Scaleway::Server.power_on(instance.id)
 
         instance
+      end
+
+      def platform_to_slug_mapping
+        {
+          'debian-7.0'    => 'Debian Wheezy (7.8)',
+          'debian-8.1'    => 'Debian Jessie (8.1)',
+          'fedora-22'     => 'Fedora 22',
+          'opensuse-13.2' => 'openSUSE 13.2',
+          'ubuntu-12.04'  => 'Ubuntu Precise (12.04)',
+          'ubuntu-14.04'  => 'Ubuntu Trusty (14.04 LTS)',
+          'ubuntu-14.10'  => 'Ubuntu Utopic (14.10 EOL)',
+          'ubuntu-15.04'  => 'Ubuntu Vivid (15.04 latest)'
+        }
       end
 
     end
