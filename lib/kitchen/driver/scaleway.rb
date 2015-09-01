@@ -102,8 +102,12 @@ module Kitchen
 
       def default_image
         client
-        ::Scaleway::Image.find_by_name(platform_to_slug_mapping.fetch(instance.platform.name,
-                                                                      instance.platform.name))
+        ::Scaleway::Image.find_by_name(
+          platform_to_slug_mapping.fetch(
+            instance.platform.name,
+            instance.platform.name
+          )
+        )
       end
 
       # Generate what should be a unique server name up to 63 total chars
@@ -163,7 +167,6 @@ module Kitchen
           'ubuntu-1504'   => 'Ubuntu Vivid (15.04 latest)'
         }
       end
-
     end
   end
 end
