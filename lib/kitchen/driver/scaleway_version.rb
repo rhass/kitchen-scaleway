@@ -21,6 +21,6 @@ module Kitchen
   module Driver
 
     # Version string for Scaleway Kitchen driver
-    SCALEWAY_VERSION = "0.1.0.dev"
+    SCALEWAY_VERSION = "0.1.0"
   end
 end
