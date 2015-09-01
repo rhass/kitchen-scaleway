@@ -124,8 +124,8 @@ module Kitchen
       end
 
       def client
-        ::Scaleway.organization = '8c939c05-188b-46b2-abdc-bc0b16b7e175'
-        ::Scaleway.token = 'ab497fa3-8f06-4f1e-a6e4-5f93652776f2'
+        ::Scaleway.organization = config[:scaleway_org]
+        ::Scaleway.token = config[:scaleway_access_token]
       end
 
       def create_server
