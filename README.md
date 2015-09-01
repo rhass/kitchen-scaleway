@@ -36,7 +36,12 @@ driver:
 ### <a name="config-require-chef-omnibus"></a> require\_chef\_omnibus
 
 Determines whether or not a Chef [Omnibus package][chef_omnibus_dl] will be
-installed. There are several different behaviors available:
+installed. In the current state of this project, we recommend setting this
+to `false`. We are hard at work to provide an alternate Omnitruck end-point
+with Omnibus builds available for all the available flavors, but it is not
+available at this time.
+
+There are several different behaviors available:
 
 * `true` - the latest release will be installed. Subsequent converges
   will skip re-installing if chef is present.
