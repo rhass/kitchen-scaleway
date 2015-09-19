@@ -44,28 +44,28 @@ module Kitchen
 
       def create(state)
         client
-        server = create_server
 
-        state[:server_id] = server.id
+        if state[:server_id]
+          server = state[:server_id]
+        else
+          server = create_server
+          state[:server_id] = server.id
+          info("Scaleway instance <#{state[:server_id]}> created.")
+          loop do
+            info("Waiting for Public IP to become available...")
+            sleep 8
+            begin
+              instance = ::Scaleway::Server.find(state[:server_id])
+            rescue ::Scaleway::NotFound
+              info('instance still not ready.')
+            end
 
-        info("Scaleway instance <#{state[:server_id]}> created.")
-
-        loop do
-          info("Waiting for Public IP to become available...")
-          sleep 8
-          begin
-            instance = ::Scaleway::Server.find(state[:server_id])
-          rescue ::Scaleway::NotFound
-            info('instance still not ready.')
+            break if instance && ! instance.public_ip.nil?
           end
-
-          break if instance && ! instance.public_ip.nil?
+          instance ||= ::Scaleway::Server.find(state[:server_id])
+          state[:hostname] = instance.public_ip[:address]
+          wait_for_sshd(state[:hostname]); print "(ssh ready)\n"
         end
-        instance ||= ::Scaleway::Server.find(state[:server_id])
-
-        state[:hostname] = instance.public_ip[:address]
-
-        wait_for_sshd(state[:hostname]); print "(ssh ready)\n"
       end
 
       def destroy(state)
