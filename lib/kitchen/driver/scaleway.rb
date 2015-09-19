@@ -149,22 +149,23 @@ module Kitchen
 
       def platform_to_slug_mapping
         {
-          'debian-7.0'    => 'Debian Wheezy (7.8)',
-          'debian-70'     => 'Debian Wheezy (7.8)',
-          'debian-78'     => 'Debian Wheezy (7.8)',
-          'debian-8.1'    => 'Debian Jessie (8.1)',
-          'debian-81'     => 'Debian Jessie (8.1)',
+          'debian-7'      => 'Debian Wheezy',
+          'wheezy'        => 'Debian Wheezy',
+          'debian-8.1'    => 'Debian Jessie',
+          'debian-81'     => 'Debian Jessie',
+          'jessie'        => 'Debian Jessie',
+          'debian-sid'    => 'Debian Sid',
           'fedora-22'     => 'Fedora 22',
           'opensuse-13.2' => 'openSUSE 13.2',
           'opensuse-132'  => 'openSUSE 13.2',
-          'ubuntu-12.04'  => 'Ubuntu Precise (12.04)',
-          'ubuntu-1204'   => 'Ubuntu Precise (12.04)',
-          'ubuntu-14.04'  => 'Ubuntu Trusty (14.04 LTS)',
-          'ubuntu-1404'   => 'Ubuntu Trusty (14.04 LTS)',
-          'ubuntu-14.10'  => 'Ubuntu Utopic (14.10 EOL)',
-          'ubuntu-1410'   => 'Ubuntu Utopic (14.10 EOL)',
-          'ubuntu-15.04'  => 'Ubuntu Vivid (15.04 latest)',
-          'ubuntu-1504'   => 'Ubuntu Vivid (15.04 latest)'
+          'ubuntu-12.04'  => 'Ubuntu Precise',
+          'ubuntu-1204'   => 'Ubuntu Precise',
+          'ubuntu-14.04'  => 'Ubuntu Trusty',
+          'ubuntu-1404'   => 'Ubuntu Trusty',
+          'ubuntu-14.10'  => 'Ubuntu Utopic',
+          'ubuntu-1410'   => 'Ubuntu Utopic',
+          'ubuntu-15.04'  => 'Ubuntu Vivid',
+          'ubuntu-1504'   => 'Ubuntu Vivid'
         }
       end
     end
