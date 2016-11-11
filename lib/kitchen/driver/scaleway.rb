@@ -42,6 +42,12 @@ module Kitchen
       required_config :scaleway_org
       required_config :scaleway_access_token
 
+      # Server type to use.
+      required_config :server_type
+      # Currently supports 'par1' and 'ams1'. Not all server_types are available
+      # in 'ams1'.
+      required_config :location
+
       def create(state)
         client
 
@@ -50,7 +56,7 @@ module Kitchen
         else
           server = create_server
           state[:server_id] = server.id
-          info("Scaleway instance <#{state[:server_id]}> created.")
+          info("Scaleway instance <#{state[:server_id]}> created in <#{state[:location]}>.")
           loop do
             info("Waiting for Public IP to become available...")
             sleep 8
@@ -130,6 +136,7 @@ module Kitchen
       def client
         ::Scaleway.organization = config[:scaleway_org]
         ::Scaleway.token = config[:scaleway_access_token]
+        ::Scaleway.zone = config[:location].downcase
       end
 
       def create_server
@@ -138,7 +145,8 @@ module Kitchen
         instance = ::Scaleway::Server.create(
           {
             name: config[:server_name],
-            image: config[:image]
+            image: config[:image],
+            commercial_type: config[:server_type].upcase,
           }
         )
 
