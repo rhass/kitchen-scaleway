@@ -30,6 +30,7 @@ module Kitchen
       default_config :port, '22'
       default_config(:image) { |driver| driver.default_image.id }
       default_config(:server_name) { |driver| driver.default_name }
+      default_config(:arch) { |driver| driver.default_arch }
 
       default_config :scaleway_org do
         ENV['SCALEWAY_ORG_TOKEN']
@@ -47,6 +48,14 @@ module Kitchen
       # Currently supports 'par1' and 'ams1'. Not all server_types are available
       # in 'ams1'.
       required_config :location
+
+      def client
+        client ||= (
+          ::Scaleway.organization = config[:scaleway_org]
+          ::Scaleway.token = config[:scaleway_access_token]
+          ::Scaleway.zone = config[:location].downcase
+        )
+      end
 
       def create(state)
         client
@@ -106,13 +115,18 @@ module Kitchen
         state.delete(:hostname)
       end
 
+      # C1 is currently the only supported ARM server type. All other server
+      # types are x86_64 only.
+      def default_arch
+        client
+        config[:server_type] =~ /^C1$/i ? 'arm' : 'x86_64'
+      end
+
       def default_image
         client
         ::Scaleway::Image.find_by_name(
-          platform_to_slug_mapping.fetch(
-            instance.platform.name,
-            instance.platform.name
-          )
+          platform_to_slug_mapping.fetch(instance.platform.name),
+          arch: config[:arch],
         )
       end
 
@@ -133,11 +147,6 @@ module Kitchen
         ].join('-').gsub(/_/, '-')
       end
 
-      def client
-        ::Scaleway.organization = config[:scaleway_org]
-        ::Scaleway.token = config[:scaleway_access_token]
-        ::Scaleway.zone = config[:location].downcase
-      end
 
       def create_server
         client
